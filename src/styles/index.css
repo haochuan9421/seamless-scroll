@@ -1,0 +1,86 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+ol,
+ul,
+li {
+  list-style: none;
+}
+
+h3 {
+  height: 150px;
+  line-height: 150px;
+  text-align: center;
+}
+
+p {
+  padding: 10px;
+  text-align: center;
+}
+
+p button {
+  margin: 0 10px;
+  padding: 5px 12px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+ul li {
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  font-size: 64px;
+  font-weight: 500;
+  color: #ffffff;
+  user-select: none;
+}
+
+/* .item1 {
+  background: red;
+}
+.item2 {
+  background: blue;
+}
+.item3 {
+  background: green;
+}
+.item4 {
+  background: gold;
+}
+.item5 {
+  background: aqua;
+} */
+
+.item1 {
+  background-image: url("../images/1.png");
+}
+.item2 {
+  background-image: url("../images/2.png");
+}
+.item3 {
+  background-image: url("../images/3.png");
+}
+.item4 {
+  background-image: url("../images/4.png");
+}
+.item5 {
+  background-image: url("../images/5.png");
+}
+
+/* .item6 {
+  background-image: url("../images/6.jpeg");
+}
+.item7 {
+  background-image: url("../images/7.jpeg");
+}
+.item8 {
+  background-image: url("../images/8.jpeg");
+}
+.item9 {
+  background-image: url("../images/9.jpeg");
+}
+.item10 {
+  background-image: url("../images/10.jpeg");
+} */
