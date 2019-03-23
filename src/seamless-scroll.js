@@ -407,7 +407,7 @@ function SeamlessScroll(opts) {
   }
 
   // 触摸开始
-  wrap.ontouchstart = function(event) {
+  function touchStartHandler(event) {
     _this.stop();
     startTime = Date.now();
     startX = event.touches[0].pageX;
@@ -415,10 +415,11 @@ function SeamlessScroll(opts) {
     startLeft = leftOffset;
     startTop = topOffset;
     startIndex = getVisualIndex();
-  };
+  }
+  wrap.addEventListener('touchstart', touchStartHandler);
 
   // 滑动
-  wrap.ontouchmove = function(event) {
+  function touchMoveHandler(event) {
     // 防止父级滚动
     opts.prevent && event.preventDefault();
     let diff, max, min;
@@ -446,10 +447,11 @@ function SeamlessScroll(opts) {
       }
       list.style.transform = `translateY(${topOffset}px)`;
     }
-  };
+  }
+  wrap.addEventListener('touchmove', touchMoveHandler);
 
   // 触摸结束
-  wrap.ontouchend = function(event) {
+  function touchEndHandler(event) {
     let moveTime = Date.now() - startTime;
     if (isHorizontal) {
       let endX = event.changedTouches[0].pageX;
@@ -483,7 +485,8 @@ function SeamlessScroll(opts) {
         move(topOffset < destination ? 'down' : 'up', Math.abs(destination - topOffset) / 15);
       }
     }
-  };
+  }
+  wrap.addEventListener('touchend', touchEndHandler);
 
   // 开始（该方法只能调用一次，用于非自动播放时，手动开始播放）
   this.start = function() {
@@ -619,6 +622,10 @@ function SeamlessScroll(opts) {
   this.destory = function() {
     // 停止移动
     _this.stop();
+    // 移除监听器
+    wrap.removeEventListener('touchstart', touchStartHandler);
+    wrap.removeEventListener('touchmove', touchMoveHandler);
+    wrap.removeEventListener('touchend', touchEndHandler);
     // 清除添加的样式
     // 1. 父容器样式
     wrap.style.display = '';

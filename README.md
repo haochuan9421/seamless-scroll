@@ -25,7 +25,7 @@
 
 <img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/demo.gif" width="375" />
 
-[扫码体验](https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/qrcode.png)&emsp;[点击预览](https://haochuan9421.github.io/seamless-scroll-demo/)&emsp;[示例代码](https://github.com/HaoChuan9421/seamless-scroll-demo/)
+[扫码体验移动端](https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/qrcode.png)&emsp;[点击预览 PC 端](https://haochuan9421.github.io/seamless-scroll-demo/)&emsp;[示例代码](https://github.com/HaoChuan9421/seamless-scroll-demo/)
 
 <img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/qrcode.png" width="200" />
 
@@ -128,12 +128,15 @@ startBtn.addEventListener('click', function() {
 - 示例：`scroller.resize(375, 175) // width, height`
 - 参数类型：`Number`，单位 `px`
 
-比如下面这段代码，就是在监听到浏览器窗口大小改变后，重新设置了宽高。
+比如下面这段代码，就是在监听到浏览器窗口大小改变后，重新设置了容器的宽高。
 
 ```js
-(function() {
-  var resizing, resizeTimer;
-  window.onresize = function() {
+(function(vm) {
+  var resizing,
+    resizeTimer,
+    requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+  vm.resizeHandler = function() {
     if (!resizing) {
       // 第一次触发，停止 scroller 的滚动
       resizing = true;
@@ -144,10 +147,21 @@ startBtn.addEventListener('click', function() {
       // 停下来后，重设 scroller 的宽高，并继续之前的播放
       resizing = false;
       scroller.resize(document.body.clientWidth, 300);
-      scroller.continue();
+      requestAnimationFrame(function() {
+        scroller.continue();
+      });
     }, 100);
   };
-})();
+  window.addEventListener('resize', vm.resizeHandler);
+})(this);
+```
+
+不要忘记在离开页面时，清除监听器！下面是在 `Vue` 的 `beforeDestroy` 钩子中清除对窗口变化监听的示例
+
+```js
+beforeDestroy(){
+  window.removeEventListener('resize', this.resizeHandler);
+}
 ```
 
 #### `destory`
