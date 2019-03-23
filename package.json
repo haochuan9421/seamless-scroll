@@ -1,6 +1,6 @@
 {
   "name": "seamless-scroll",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "JS无缝滚动",
   "main": "lib/seamless-scroll.min.js",
   "scripts": {

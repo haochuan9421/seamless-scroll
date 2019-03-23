@@ -18,10 +18,31 @@ var scroller = new SeamlessScroll({
   }
 });
 
+// 按钮
 document.getElementById('start').addEventListener('click', scroller.start);
 document.getElementById('stop').addEventListener('click', scroller.stop);
 document.getElementById('continue').addEventListener('click', scroller.continue);
 
+// 监听窗口变化
+(function() {
+  var resizing, resizeTimer;
+  window.onresize = function() {
+    if (!resizing) {
+      resizing = true;
+      console.log('停止播放');
+      scroller.stop();
+    }
+    resizeTimer && clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      console.log('停下来了，可以继续播放了');
+      resizing = false;
+      scroller.resize(document.body.clientWidth, 300);
+      scroller.continue();
+    }, 100);
+  };
+})();
+
+// 跳转
 document.getElementById('left').addEventListener('click', function() {
   scroller.go('left');
 });

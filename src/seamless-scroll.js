@@ -488,6 +488,7 @@ function SeamlessScroll(opts) {
       // setTimeout 的返回值是正整数，一旦 play 方法被调用，该值即为 Truthy
       return;
     }
+    stopped = false;
     play(0); // 0ms 延迟，立即开始移动
   };
 
@@ -575,6 +576,40 @@ function SeamlessScroll(opts) {
         }
       }
     });
+  };
+
+  // 重置宽高
+  this.resize = function(width, height) {
+    isNonNegativeNumber('width', width);
+    isNonNegativeNumber('height', height);
+    // 保存之前的宽高
+    let widthBak = opts.width;
+    let heightBak = opts.height;
+    // 更新内部数据
+    opts.width = width;
+    opts.height = height;
+    oneStep = (((isHorizontal ? width : height) / opts.duration) * 1000) / 60;
+    // 更新样式
+    wrap.style.width = width + 'px';
+    wrap.style.height = height + 'px';
+    if (isHorizontal) {
+      list.style.height = height + 'px';
+      list.style.width = width * (length + 2) + 'px';
+      // 等比缩放偏移量和目标位置的值
+      destination = destination * (width / widthBak);
+      leftOffset = leftOffset * (width / widthBak);
+      list.style.transform = `translateX(${leftOffset}px)`;
+    } else {
+      list.style.height = height * (length + 2) + 'px';
+      list.style.width = width + 'px';
+      destination = destination * (height / heightBak);
+      topOffset = topOffset * (height / heightBak);
+      list.style.transform = `translateY(${leftOffset}px)`;
+    }
+    for (let i = 0; i < length + 2; i++) {
+      items[i].style.width = width + 'px';
+      items[i].style.height = height + 'px';
+    }
   };
 }
 

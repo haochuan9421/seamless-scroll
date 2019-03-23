@@ -31,9 +31,9 @@
 
 ## Browser support
 
-| <img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/chrome.png" width="16px" height="16px" /></br>Chrome | <img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/firefox.png" width="16px" height="16px" /></br>Firefox | <img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/safari.png" width="16px" height="16px" /></br>Safari |<img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/ie.png" width="16px" height="16px" /></br>IE | <img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/ios.png" width="16px" height="16px" /></br>iOS | <img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/android.png" width="16px" height="16px" /></br>Android |
-|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|
-| &check; | &check; | 9.1+ | 10+ | 9+| 5+
+| <img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/chrome.png" width="16px" height="16px" /></br>Chrome | <img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/firefox.png" width="16px" height="16px" /></br>Firefox | <img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/safari.png" width="16px" height="16px" /></br>Safari | <img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/ie.png" width="16px" height="16px" /></br>IE | <img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/ios.png" width="16px" height="16px" /></br>iOS | <img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/android.png" width="16px" height="16px" /></br>Android |
+| :------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------: |
+|                                                             &check;                                                              |                                                              &check;                                                               |                                                               9.1+                                                               |                                                           10+                                                            |                                                             9+                                                             |                                                                 5+                                                                 |
 
 ## Installation
 
@@ -46,6 +46,7 @@ yarn add seamless-scroll
 ## Quick Start
 
 为了插件更好的运行，页面的 DOM 结构需按照下面的约定设置：
+
 ```html
 <!-- 容器 -->
 <div id="box">
@@ -66,7 +67,7 @@ yarn add seamless-scroll
 
 ```js
 // 引入插件
-import SeamlessScroll from 'seamless-scroll'
+import SeamlessScroll from 'seamless-scroll';
 
 // 创建实例
 const scroller = new SeamlessScroll({
@@ -78,27 +79,26 @@ const scroller = new SeamlessScroll({
 });
 
 // 用户点击“开始按钮”时，调用实例的 start 方法，开始播放
-const startBtn = document.getElementById('start-btn')
-startBtn.addEventListener('click', function(){
-  scroller.start()
+const startBtn = document.getElementById('start-btn');
+startBtn.addEventListener('click', function() {
+  scroller.start();
 });
 ```
+
 ## 参数
 
-参数名 | 说明 | 可选值 | 默认值 | 必填
--- | -- | -- | -- | -- 
-`el` | 容器元素。可以是已经获取到的 `DOM` 对象，也可以是元素 `id` | `DOMElement` 或 `String` | 无 | 是
-`direction` | 滚动的方向 | `left`, `right`, `up`, `down` | `left` | 否 
-`width` | 容器的宽度，单位 `px` | `Number` | 无 | 是 
-`height` | 容器的高度，单位 `px` | `Number` | 无 | 是 
-`delay` | 每屏停留的时间，单位 `ms` | `Number` | `3000` | 否 
-`duration` | 滚动一屏需要的时间，单位 `ms` | `Number` | `300` | 否 
-`activeIndex` | 默认显示的元素在列表中的索引，从 `0` 开始 | `Number` | `0` | 否 
-`autoPlay` | 是否自动开始播放，如果设置为 `false`，稍后可以调用实例的 `start` 方法手动开始 | `Boolean` | `true` | 否 
-`prevent` | 阻止页面滚动，通常用于竖向播放的情况，设置为 `true` 时，可避免用户在组件内的滑动手势导致的页面上下滚动 | `Boolean` | `true` | 否 
-`onChange` | 屏与屏之间切换时的回调函数，入参为当前屏的索引，可用于自定义小圆点指示器这样的场景 | `Function` | 无 | 否 
-
-
+| 参数名        | 说明                                                                                                   | 可选值                        | 默认值 | 必填 |
+| ------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------- | ------ | ---- |
+| `el`          | 容器元素。可以是已经获取到的 `DOM` 对象，也可以是元素 `id`                                             | `DOMElement` 或 `String`      | 无     | 是   |
+| `direction`   | 滚动的方向                                                                                             | `left`, `right`, `up`, `down` | `left` | 否   |
+| `width`       | 容器的宽度，单位 `px`                                                                                  | `Number`                      | 无     | 是   |
+| `height`      | 容器的高度，单位 `px`                                                                                  | `Number`                      | 无     | 是   |
+| `delay`       | 每屏停留的时间，单位 `ms`                                                                              | `Number`                      | `3000` | 否   |
+| `duration`    | 滚动一屏需要的时间，单位 `ms`                                                                          | `Number`                      | `300`  | 否   |
+| `activeIndex` | 默认显示的元素在列表中的索引，从 `0` 开始                                                              | `Number`                      | `0`    | 否   |
+| `autoPlay`    | 是否自动开始播放，如果设置为 `false`，稍后可以调用实例的 `start` 方法手动开始                          | `Boolean`                     | `true` | 否   |
+| `prevent`     | 阻止页面滚动，通常用于竖向播放的情况，设置为 `true` 时，可避免用户在组件内的滑动手势导致的页面上下滚动 | `Boolean`                     | `true` | 否   |
+| `onChange`    | 屏与屏之间切换时的回调函数，入参为当前屏的索引，可用于自定义小圆点指示器这样的场景                     | `Function`                    | 无     | 否   |
 
 ## 实例方法
 
@@ -106,25 +106,49 @@ startBtn.addEventListener('click', function(){
 
 非自动播放时，调用此方法可手动开始播放。只能调用一次，仅限于 `autoPlay` 为 `false` 且从未开始的情况下使用。
 
-- 参数：无
-
 #### `stop`
 
 停止播放。
 
-- 参数：无
-
 #### `continue`
 
-继续播放，配合 `stop` 方法使用。
-
-- 参数：无
+继续播放。配合 `stop` 方法使用。
 
 #### `go`
 
-直接滚动的某个索引的位置，或者向某个方向滚动一屏，你可以借助此方法实现快速跳转或者前后切换的业务场景。该方法跳转的逻辑是选取目标屏与当前屏的最短距离进行位移，比如从 `第5屏` 到 `第2屏`，会按照 `5，1，2` 的顺序移动，而不是 `5，4，3，2` 的顺序，这样的好处在于真正形成视觉上的 “**无缝**” 效果。
+直接滚动的某个索引的位置，或者向某个方向滚动一屏。你可以借助此方法实现快速跳转或者前后切换的业务场景。该方法跳转的逻辑是选取目标屏与当前屏的最短距离进行位移，比如从 `第5屏` 到 `第2屏`，会按照 `5，1，2` 的顺序移动，而不是 `5，4，3，2` 的顺序，这样的好处在于真正形成视觉上的 “**无缝**” 效果。
 
-- 参数：`Number` 或 `left`, `right`, `up`, `down`
+- 示例：`scroller.go(0)` 或 `scroller.go('left')`
+- 参数类型：`Number` 或 `left`, `right`, `up`, `down`
+
+#### `resize`
+
+更新容器的宽高。
+
+- 示例：`scroller.resize(375, 175) // width, height`
+- 参数类型：`Number`，单位 `px`
+
+比如下面这段代码，就是在监听到浏览器窗口大小改变后，重新设置了宽高。
+
+```js
+(function() {
+  var resizing, resizeTimer;
+  window.onresize = function() {
+    if (!resizing) {
+      // 第一次触发，停止 scroller 的滚动
+      resizing = true;
+      scroller.stop();
+    }
+    resizeTimer && clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      // 停下来后，重设 scroller 的宽高，并继续之前的播放
+      resizing = false;
+      scroller.resize(document.body.clientWidth, 300);
+      scroller.continue();
+    }, 100);
+  };
+})();
+```
 
 ## Features
 
