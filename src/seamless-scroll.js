@@ -97,6 +97,9 @@ if ('transition' in document.body.style === false) {
 }
 
 function SeamlessScroll(opts) {
+  if (!(this instanceof SeamlessScroll)) {
+    throw new TypeError('SeamlessScroll must be called by the \'new\' keyword as a constructor');
+  }
   const _this = this;
   // 参数校验
   checkOpts(opts);
@@ -610,6 +613,44 @@ function SeamlessScroll(opts) {
       items[i].style.width = width + 'px';
       items[i].style.height = height + 'px';
     }
+  };
+
+  // 销毁
+  this.destory = function() {
+    // 停止移动
+    _this.stop();
+    // 清除添加的样式
+    // 1. 父容器样式
+    wrap.style.display = '';
+    wrap.style.width = '';
+    wrap.style.height = '';
+    wrap.style.overflow = '';
+
+    // 2. 列表样式
+    list.style.display = '';
+    list.style.height = '';
+    list.style.width = '';
+    list.style.transform = '';
+
+    // 3. 移除边界元素
+    list.removeChild(items[0]);
+    list.removeChild(items[length]);
+
+    // 4. 元素样式
+    for (let i = 0; i < length; i++) {
+      items[i].style.display = '';
+      items[i].style.width = '';
+      items[i].style.height = '';
+      if (isHorizontal) {
+        items[i].style.float = '';
+      }
+    }
+    // 释放内存 (JS 有自带垃圾回收机制，而且似乎也没有办法从构造函数内部删除已创建的实例)
+    // 参考链接：https://stackoverflow.com/questions/21118952/javascript-create-and-destroy-class-instance-through-class-method
+    for (let key in _this) {
+      delete _this[key];
+    }
+    _this['__proto__'] = null;
   };
 }
 

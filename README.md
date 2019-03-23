@@ -150,6 +150,18 @@ startBtn.addEventListener('click', function() {
 })();
 ```
 
+#### `destory`
+
+销毁实例，恢复元素的默认样式
+
+下面是在 `React` 的 `componentWillUnmount` 钩子中调用该方法的示例：
+
+```js
+componentWillUnmount(){
+  this.scroller.destory()
+}
+```
+
 ## Features
 
 1. `60fps` 的流畅体验，基于 `requestAnimationFrame` 和 `translate` 实现。
