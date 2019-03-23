@@ -210,7 +210,7 @@ function SeamlessScroll(opts) {
     // 偏移量立即回归到准确的位置
     if (isHorizontal) {
       leftOffset = -opts.width * observerObj.innerActive;
-      list.style.transform = `translateX(${leftOffset}px`;
+      list.style.transform = `translateX(${leftOffset}px)`;
     } else {
       topOffset = -opts.height * observerObj.innerActive;
       list.style.transform = `translateY(${topOffset}px)`;
@@ -271,7 +271,7 @@ function SeamlessScroll(opts) {
           leftOffset -= step;
           if (leftOffset > destination) {
             // 即使向前走一步也不会超出目标，那就走呗
-            list.style.transform = `translateX(${leftOffset}px`;
+            list.style.transform = `translateX(${leftOffset}px)`;
             moveRequestId = requestAnimationFrame(moveStep);
           } else {
             // 到达或超过了目标位置后，如果已经播放过了，那就可以调用 play 方法继续了，如果从来没播放过，调整好位置，静静的待着
@@ -281,7 +281,7 @@ function SeamlessScroll(opts) {
         case 'right':
           leftOffset += step;
           if (leftOffset < destination) {
-            list.style.transform = `translateX(${leftOffset}px`;
+            list.style.transform = `translateX(${leftOffset}px)`;
             moveRequestId = requestAnimationFrame(moveStep);
           } else {
             delayTimer ? play() : resetStatus();
@@ -329,17 +329,17 @@ function SeamlessScroll(opts) {
           if (leftOffset < destination && leftOffset - step > min) {
             // 一直移动到最右侧
             leftOffset -= step;
-            list.style.transform = `translateX(${leftOffset}px`;
+            list.style.transform = `translateX(${leftOffset}px)`;
             moveRequestId = requestAnimationFrame(moveStep);
           } else if (leftOffset - step <= min) {
             // 临界状态，重置
             leftOffset = -opts.width;
-            list.style.transform = `translateX(${leftOffset}px`;
+            list.style.transform = `translateX(${leftOffset}px)`;
             moveRequestId = requestAnimationFrame(moveStep);
           } else if (leftOffset - step > destination) {
             // 继续向左移动
             leftOffset -= step;
-            list.style.transform = `translateX(${leftOffset}px`;
+            list.style.transform = `translateX(${leftOffset}px)`;
             moveRequestId = requestAnimationFrame(moveStep);
           } else {
             delayTimer ? play() : resetStatus();
@@ -348,15 +348,15 @@ function SeamlessScroll(opts) {
         case 'right':
           if (leftOffset > destination && leftOffset + step < max) {
             leftOffset += step;
-            list.style.transform = `translateX(${leftOffset}px`;
+            list.style.transform = `translateX(${leftOffset}px)`;
             moveRequestId = requestAnimationFrame(moveStep);
           } else if (leftOffset + step >= max) {
             leftOffset = -opts.width * length;
-            list.style.transform = `translateX(${leftOffset}px`;
+            list.style.transform = `translateX(${leftOffset}px)`;
             moveRequestId = requestAnimationFrame(moveStep);
           } else if (leftOffset + step < destination) {
             leftOffset += step;
-            list.style.transform = `translateX(${leftOffset}px`;
+            list.style.transform = `translateX(${leftOffset}px)`;
             moveRequestId = requestAnimationFrame(moveStep);
           } else {
             delayTimer ? play() : resetStatus();
@@ -430,7 +430,7 @@ function SeamlessScroll(opts) {
       } else if (leftOffset < min) {
         leftOffset = min;
       }
-      list.style.transform = `translateX(${leftOffset}px`;
+      list.style.transform = `translateX(${leftOffset}px)`;
     } else {
       diff = event.touches[0].pageY - startY;
       topOffset = startTop + diff;
@@ -549,7 +549,7 @@ function SeamlessScroll(opts) {
         } else if (leftOffset < -len) {
           leftOffset += len;
         }
-        list.style.transform = `translateX(${leftOffset}px`;
+        list.style.transform = `translateX(${leftOffset}px)`;
         // 确认目标位置，并以最短的距离直接从当前位置移动到目标屏（比如从第五屏到第二屏，如果按照 5，4，3，2 的顺序走，是不如5，1，2 的顺序的）
         destination = -opts.width * observerObj.innerActive;
         let diff = Math.abs(destination - leftOffset);

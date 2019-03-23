@@ -25,7 +25,7 @@
 
 <img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/demo.gif" width="375" />
 
-[扫码体验](https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/qrcode.png)&emsp;[示例代码](https://github.com/HaoChuan9421/seamless-scroll-demo/)
+[扫码体验](https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/qrcode.png)&emsp;[点击预览](https://haochuan9421.github.io/seamless-scroll-demo/)&emsp;[示例代码](https://github.com/HaoChuan9421/seamless-scroll-demo/)
 
 <img src="https://github.com/HaoChuan9421/seamless-scroll/raw/master/assets/qrcode.png" width="200" />
 
