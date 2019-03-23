@@ -601,6 +601,16 @@ function SeamlessScroll(opts) {
     if (isHorizontal) {
       list.style.height = height + 'px';
       list.style.width = width * (length + 2) + 'px';
+      // 满屏状态下的边界情况处理
+      if (leftOffset % widthBak === 0) {
+        if (destination === undefined) {
+          destination = -widthBak; // 没有移动过
+        } else if (destination === 0) {
+          destination = -widthBak * length; // 最后一屏
+        } else if (destination === -widthBak * (length + 1)) {
+          destination = -widthBak; // 第一屏
+        }
+      }
       // 等比缩放偏移量和目标位置的值
       destination = destination * (width / widthBak);
       leftOffset = leftOffset * (width / widthBak);
@@ -608,6 +618,17 @@ function SeamlessScroll(opts) {
     } else {
       list.style.height = height * (length + 2) + 'px';
       list.style.width = width + 'px';
+      // 满屏状态下的边界情况处理
+      if (topOffset % heightBak === 0) {
+        if (destination === undefined) {
+          destination = -heightBak; // 没有移动过
+        } else if (destination === 0) {
+          destination = -heightBak * length; // 最后一屏
+        } else if (destination === -heightBak * (length + 1)) {
+          destination = -heightBak; // 第一屏
+        }
+      }
+      // 等比缩放偏移量和目标位置的值
       destination = destination * (height / heightBak);
       topOffset = topOffset * (height / heightBak);
       list.style.transform = `translateY(${leftOffset}px)`;
