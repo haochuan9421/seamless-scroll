@@ -164,7 +164,7 @@ beforeDestroy(){
 }
 ```
 
-#### `destory`
+#### `destroy`
 
 销毁实例，恢复元素的默认样式
 
@@ -172,7 +172,7 @@ beforeDestroy(){
 
 ```js
 componentWillUnmount(){
-  this.scroller.destory()
+  this.scroller.destroy()
 }
 ```
 

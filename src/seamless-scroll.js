@@ -640,7 +640,7 @@ function SeamlessScroll(opts) {
   };
 
   // 销毁
-  this.destory = function() {
+  this.destroy = function() {
     // 停止移动
     _this.stop();
     // 移除监听器

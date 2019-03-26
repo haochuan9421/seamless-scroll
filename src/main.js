@@ -22,8 +22,8 @@ var scroller = new SeamlessScroll({
 document.getElementById('start').addEventListener('click', scroller.start);
 document.getElementById('stop').addEventListener('click', scroller.stop);
 document.getElementById('continue').addEventListener('click', scroller.continue);
-document.getElementById('destory').addEventListener('click', ()=>{
-  scroller.destory();
+document.getElementById('destroy').addEventListener('click', ()=>{
+  scroller.destroy();
   console.log(scroller);
 });
 
