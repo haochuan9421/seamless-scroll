@@ -89,11 +89,11 @@ function checkOpts(opts) {
 const requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 const cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
 if (!requestAnimationFrame) {
-  throw new Error('seamless-scroll can\'t work, because of requestAnimationFrame is not supported in your browser！');
+  throw new Error('seamless-scroll can\'t work, because of requestAnimationFrame is not supported in your browser!');
 }
 // translate 兼容到：IOS9+, Safari9.1+, Android5+, IE10+。虽然使用定位 + left/top，也可以实现本插件的效果，但是效果不如 translate
 if ('transition' in document.body.style === false) {
-  console.log('seamless-scroll may not work, because of css transition is support in your browser！');
+  console.log('seamless-scroll may not work, because of css transition is support in your browser!');
 }
 
 function SeamlessScroll(opts) {
@@ -110,21 +110,21 @@ function SeamlessScroll(opts) {
   const length = items.length; // 子元素数量
 
   // 初始化内部变量
-  let isHorizontal = opts.direction === 'left' || opts.direction === 'right', // 是否是水平方向移动
-    delayTimer, // 屏与屏切换时的延迟定时器
+  const isHorizontal = opts.direction === 'left' || opts.direction === 'right'; // 是否是水平方向移动
+  const pagePos = isHorizontal ? 'pageX' : 'pageY';
+  const translate = isHorizontal ? 'translateX' : 'translateY';
+
+  let delayTimer, // 屏与屏切换时的延迟定时器
     moveRequestId, // requestAnimationFrame 的返回值
-    destination, // 目标位置
+    offset, // 列表元素当前的位置偏移量 (通过读取元素的样式也可以获取，但这样通过 JS 变量来记录，对性能的开销显然小于直接操作 DOM）
+    destination, // 列表元素需要移动到的目标位置
     startPos, // 触摸开始时的X或Y轴坐标 代替startX/startY
     startOffset, // 触摸开始时的偏移量 代替startLeft/startTop
     startTime, // 触摸开始时的时间戳
     startIndex, // 触摸开始时，触摸的元素的索引值
-    directionOffset, // 方向偏移量 (通过读取元素的样式也可以获取，但这样通过 JS 变量来记录，对性能的开销显然小于直接对 DOM 操作的开销） 代替leftOffset/topOffset
-    stopped; // 是否已被停止
-  const eleSize = isHorizontal ? opts.width : opts.height;
-  const pagePos = isHorizontal ? 'pageX' : 'pageY';
-  const translate = isHorizontal ? 'translateX' : 'translateY';
-  let oneStep = eleSize / opts.duration * 1000 / 60; // 每一小步移动的距离（requestAnimationFrame 的回调函数执行次数通常是每秒60次）
-
+    stopped, // 是否已被停止
+    eleSize = isHorizontal ? opts.width : opts.height, // 单个元素在移动方向上的尺寸
+    oneStep = ((eleSize / opts.duration) * 1000) / 60; // 每一小步移动的距离（requestAnimationFrame 的回调函数执行次数通常是每秒60次）
   // 监听内部索引值的变化，并在被更改时调用 opts.onChange 方法通知外部
   let observerObj = { _innerActive: opts.activeIndex + 1 }; // 内部索引
   Object.defineProperty(observerObj, 'innerActive', {
@@ -147,6 +147,7 @@ function SeamlessScroll(opts) {
 
   // 设置列表样式
   list.style.display = 'block';
+  list.style.zIndex = '10';
   if (isHorizontal) {
     list.style.height = opts.height + 'px';
     list.style.width = opts.width * (length + 2) + 'px';
@@ -185,7 +186,7 @@ function SeamlessScroll(opts) {
    */
   function getVisualIndex() {
     let index;
-    index = Math.round(Math.abs(directionOffset) / eleSize);
+    index = Math.round(Math.abs(offset) / eleSize);
     if (index === 0) {
       // 补位到最前面的那一屏
       index = length;
@@ -207,8 +208,8 @@ function SeamlessScroll(opts) {
       observerObj.innerActive = length;
     }
     // 偏移量立即回归到准确的位置
-    directionOffset = -eleSize * observerObj.innerActive;
-    list.style.transform = `${translate}(${directionOffset}px)`;
+    offset = -eleSize * observerObj.innerActive;
+    list.style.transform = `${translate}(${offset}px)`;
   }
 
   /**
@@ -236,10 +237,10 @@ function SeamlessScroll(opts) {
    */
   function move(direction, step) {
     // https://developer.mozilla.org/zh-CN/docs/Web/CSS/will-change(效果还不如不加的流畅)
-    // if ('willChange' in list.style && list.style.willChange === '') {
+    // if ('willChange' in list.style) {
     //   list.style.willChange = 'transform';
     // }
-
+    
     function moveStep() {
       // 由于 cancelAnimationFrame 的兼容性比较差，stop 方法触发时并不一定能让这个递归动作取消，也就是移动停止
       // 所以需要通过配合 stopped 字段来决定行止
@@ -247,19 +248,22 @@ function SeamlessScroll(opts) {
         return;
       }
       if (['left', 'up'].includes(direction)) {
-        directionOffset -= step;
-        if (directionOffset > destination) {
+        offset -= step;
+        if (offset > destination) {
           // 即使向前走一步也不会超出目标，那就走呗
-          list.style.transform = `${translate}(${directionOffset}px)`;
+          list.style.transform = `${translate}(${offset}px)`;
           moveRequestId = requestAnimationFrame(moveStep);
         } else {
+          // if ('willChange' in list.style) {
+          //   list.style.willChange = 'auto';
+          // }
           // 到达或超过了目标位置后，如果已经播放过了，那就可以调用 play 方法继续了，如果从来没播放过，调整好位置，静静的待着
           delayTimer ? play() : resetStatus();
         }
       } else {
-        directionOffset += step;
-        if (directionOffset < destination) {
-          list.style.transform = `${translate}(${directionOffset}px)`;
+        offset += step;
+        if (offset < destination) {
+          list.style.transform = `${translate}(${offset}px)`;
           moveRequestId = requestAnimationFrame(moveStep);
         } else {
           delayTimer ? play() : resetStatus();
@@ -282,36 +286,36 @@ function SeamlessScroll(opts) {
         return;
       }
       if (['left', 'up'].includes(direction)) {
-        if (directionOffset < destination && directionOffset - step > min) {
-          // 一直移动到最右侧
-          directionOffset -= step;
-          list.style.transform = `${translate}(${directionOffset}px)`;
+        if (offset < destination && offset - step > min) {
+          // 一直移动到负边界
+          offset -= step;
+          list.style.transform = `${translate}(${offset}px)`;
           moveRequestId = requestAnimationFrame(moveStep);
-        } else if (directionOffset - step <= min) {
+        } else if (offset - step <= min) {
           // 临界状态，重置
-          directionOffset = -eleSize;
-          list.style.transform = `${translate}(${directionOffset}px)`;
+          offset = -eleSize;
+          list.style.transform = `${translate}(${offset}px)`;
           moveRequestId = requestAnimationFrame(moveStep);
-        } else if (directionOffset - step > destination) {
-          // 继续向左移动
-          directionOffset -= step;
-          list.style.transform = `${translate}(${directionOffset}px)`;
+        } else if (offset - step > destination) {
+          // 继续向目标位置移动
+          offset -= step;
+          list.style.transform = `${translate}(${offset}px)`;
           moveRequestId = requestAnimationFrame(moveStep);
         } else {
           delayTimer ? play() : resetStatus();
         }
       } else {
-        if (directionOffset > destination && directionOffset + step < max) {
-          directionOffset += step;
-          list.style.transform = `${translate}(${directionOffset}px)`;
+        if (offset > destination && offset + step < max) {
+          offset += step;
+          list.style.transform = `${translate}(${offset}px)`;
           moveRequestId = requestAnimationFrame(moveStep);
-        } else if (directionOffset + step >= max) {
-          directionOffset = -eleSize * length;
-          list.style.transform = `${translate}(${directionOffset}px)`;
+        } else if (offset + step >= max) {
+          offset = -eleSize * length;
+          list.style.transform = `${translate}(${offset}px)`;
           moveRequestId = requestAnimationFrame(moveStep);
-        } else if (directionOffset + step < destination) {
-          directionOffset += step;
-          list.style.transform = `${translate}(${directionOffset}px)`;
+        } else if (offset + step < destination) {
+          offset += step;
+          list.style.transform = `${translate}(${offset}px)`;
           moveRequestId = requestAnimationFrame(moveStep);
         } else {
           delayTimer ? play() : resetStatus();
@@ -326,7 +330,7 @@ function SeamlessScroll(opts) {
     _this.stop();
     startTime = Date.now();
     startPos = event.touches[0][pagePos];
-    startOffset = directionOffset;
+    startOffset = offset;
     startIndex = getVisualIndex();
   }
   wrap.addEventListener('touchstart', touchStartHandler);
@@ -336,17 +340,11 @@ function SeamlessScroll(opts) {
     // 防止父级滚动
     opts.prevent && event.preventDefault();
     const diff = event.touches[0][pagePos] - startPos;
-    directionOffset = startOffset + diff;
     // 不能超出边界位置
     const max = 0;
     const min = -eleSize * (length + 1);
-    if (directionOffset > max) {
-      directionOffset = max;
-    } else if (directionOffset < min) {
-      directionOffset = min;
-    }
-    list.style.transform = `${translate}(${directionOffset}px)`;
-
+    offset = Math.min(max, Math.max(min, startOffset + diff));
+    list.style.transform = `${translate}(${offset}px)`;
   }
   wrap.addEventListener('touchmove', touchMoveHandler);
 
@@ -363,14 +361,14 @@ function SeamlessScroll(opts) {
       _this.go(startIndex === 0 ? length - 1 : startIndex - 1);
     } else {
       // 慢慢的滑，停下来后，贴到最近的那一边
-      observerObj.innerActive = Math.round(Math.abs(directionOffset) / eleSize);
+      observerObj.innerActive = Math.round(Math.abs(offset) / eleSize);
       destination = -eleSize * observerObj.innerActive;
       // 开始下一波移动
       stopped = false;
       if (isHorizontal) {
-        move(directionOffset < destination ? 'right' : 'left', Math.abs(destination - directionOffset) / 15);
+        move(offset < destination ? 'right' : 'left', Math.abs(destination - offset) / 15);
       } else {
-        move(directionOffset < destination ? 'down' : 'up', Math.abs(destination - directionOffset) / 15);
+        move(offset < destination ? 'down' : 'up', Math.abs(destination - offset) / 15);
       }
     }
   }
@@ -438,27 +436,27 @@ function SeamlessScroll(opts) {
       stopped = false;
       let len = eleSize * length;
       // 如果此时出现了补位屏，立即重置位置
-      if (directionOffset > -eleSize) {
-        directionOffset -= len;
-      } else if (directionOffset < -len) {
-        directionOffset += len;
+      if (offset > -eleSize) {
+        offset -= len;
+      } else if (offset < -len) {
+        offset += len;
       }
-      list.style.transform = `${translate}(${directionOffset}px)`;
+      list.style.transform = `${translate}(${offset}px)`;
       // 确认目标位置，并以最短的距离直接从当前位置移动到目标屏（比如从第五屏到第二屏，如果按照 5，4，3，2 的顺序走，是不如5，1，2 的顺序的）
       destination = -eleSize * observerObj.innerActive;
-      let diff = Math.abs(destination - directionOffset);
+      let diff = Math.abs(destination - offset);
 
       if (isHorizontal) {
         if (diff <= len / 2) {
-          move(directionOffset < destination ? 'right' : 'left', diff / 20);
+          move(offset < destination ? 'right' : 'left', diff / 20);
         } else {
-          bestMove(directionOffset < destination ? 'left' : 'right', (len - diff) / 20);
+          bestMove(offset < destination ? 'left' : 'right', (len - diff) / 20);
         }
       } else {
         if (diff <= len / 2) {
-          move(directionOffset < destination ? 'down' : 'up', diff / 20);
+          move(offset < destination ? 'down' : 'up', diff / 20);
         } else {
-          bestMove(directionOffset < destination ? 'up' : 'down', (len - diff) / 20);
+          bestMove(offset < destination ? 'up' : 'down', (len - diff) / 20);
         }
       }
     });
@@ -474,6 +472,7 @@ function SeamlessScroll(opts) {
     // 更新内部数据
     opts.width = width;
     opts.height = height;
+    eleSize = isHorizontal ? width : height;
     oneStep = (((isHorizontal ? width : height) / opts.duration) * 1000) / 60;
     // 更新样式
     wrap.style.width = width + 'px';
@@ -482,10 +481,8 @@ function SeamlessScroll(opts) {
       list.style.height = height + 'px';
       list.style.width = width * (length + 2) + 'px';
       // 满屏状态下的边界情况处理
-      if (directionOffset % widthBak === 0) {
-        if (destination === undefined) {
-          destination = -widthBak; // 没有移动过
-        } else if (destination === 0) {
+      if (offset % widthBak === 0) {
+        if (destination === 0) {
           destination = -widthBak * length; // 最后一屏
         } else if (destination === -widthBak * (length + 1)) {
           destination = -widthBak; // 第一屏
@@ -493,16 +490,14 @@ function SeamlessScroll(opts) {
       }
       // 等比缩放偏移量和目标位置的值
       destination = destination * (width / widthBak);
-      directionOffset = directionOffset * (width / widthBak);
-      list.style.transform = `${translate}(${directionOffset}px)`;
+      offset = offset * (width / widthBak);
+      list.style.transform = `${translate}(${offset}px)`;
     } else {
       list.style.height = height * (length + 2) + 'px';
       list.style.width = width + 'px';
       // 满屏状态下的边界情况处理
-      if (directionOffset % heightBak === 0) {
-        if (destination === undefined) {
-          destination = -heightBak; // 没有移动过
-        } else if (destination === 0) {
+      if (offset % heightBak === 0) {
+        if (destination === 0) {
           destination = -heightBak * length; // 最后一屏
         } else if (destination === -heightBak * (length + 1)) {
           destination = -heightBak; // 第一屏
@@ -510,8 +505,8 @@ function SeamlessScroll(opts) {
       }
       // 等比缩放偏移量和目标位置的值
       destination = destination * (height / heightBak);
-      directionOffset = directionOffset * (height / heightBak);
-      list.style.transform = `${translate}(${directionOffset}px)`;
+      offset = offset * (height / heightBak);
+      list.style.transform = `${translate}(${offset}px)`;
     }
     for (let i = 0; i < length + 2; i++) {
       items[i].style.width = width + 'px';
